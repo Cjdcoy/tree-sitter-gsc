@@ -1,0 +1,29 @@
+{
+  "grammars": [
+    {
+      "name": "gsc",
+      "camelcase": "Gsc",
+      "scope": "source.gsc",
+      "path": ".",
+      "file-types": ["gsc"],
+      "highlights": "queries/highlights.scm",
+      "tags": "queries/tags.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for Call of Duty GSC",
+    "authors": [
+      {
+        "name": "tree-sitter-gsc contributors"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/Cjdcoy/tree-sitter-gsc"
+    }
+  },
+  "bindings": {
+    "c": true
+  }
+}

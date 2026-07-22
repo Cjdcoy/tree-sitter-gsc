@@ -1,0 +1,15 @@
+{
+  "module_resolution": {
+    "source_roots": [
+      "cod2",
+      "shared"
+    ],
+    "aliases": {
+      "FixtureAlias": "lib"
+    },
+    "extensions": [
+      ".gsc"
+    ],
+    "case_insensitive": true
+  }
+}

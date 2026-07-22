@@ -1,0 +1,350 @@
+==================
+Includes and functions
+==================
+
+#include JumpMod\_util;
+#include maps\mp\gametypes\_cod24;
+
+init()
+{
+    setup(true, 20);
+}
+
+setup(enabled, count)
+{
+    return enabled && count > 0;
+}
+
+---
+
+(source_file
+  (preproc_include
+    (path
+      (identifier)
+      (identifier)))
+  (preproc_include
+    (path
+      (identifier)
+      (identifier)
+      (identifier)
+      (identifier)))
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list
+            (boolean)
+            (number))))))
+  (function_definition
+    (identifier)
+    (parameter_list
+      (identifier)
+      (identifier))
+    (block
+      (return_statement
+        (binary_expression
+          (identifier)
+          (binary_expression
+            (identifier)
+            (number)))))))
+
+==================
+GSC call forms
+==================
+
+calls(player, callback)
+{
+    local();
+    thread local();
+    JumpMod\_settings::reghandler("name", ::handler);
+    self JumpMod\_settings::changesetting("name", 1);
+    self thread JumpMod\_jump::spawn(player);
+    player [[callback]]("done");
+    thread [[level.callback]](player);
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter_list
+      (identifier)
+      (identifier))
+    (block
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list)))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (argument_list)))
+      (expression_statement
+        (call_expression
+          (qualified_identifier
+            (path
+              (identifier)
+              (identifier))
+            (identifier))
+          (argument_list
+            (string)
+            (function_reference
+              (identifier)))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (qualified_identifier
+            (path
+              (identifier)
+              (identifier))
+            (identifier))
+          (argument_list
+            (string)
+            (number))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (qualified_identifier
+            (path
+              (identifier)
+              (identifier))
+            (identifier))
+          (argument_list
+            (identifier))))
+      (expression_statement
+        (call_expression
+          (identifier)
+          (function_pointer
+            (identifier))
+          (argument_list
+            (string))))
+      (expression_statement
+        (call_expression
+          (function_pointer
+            (member_expression
+              (identifier)
+              (identifier)))
+          (argument_list
+            (identifier)))))))
+
+==================
+Control flow
+==================
+
+control(items)
+{
+    for(i = 0; i < items.size; i++)
+    {
+        if(items[i] == undefined)
+            continue;
+        else if(!items[i].enabled)
+            break;
+    }
+
+    while(true)
+    {
+        wait 0.05;
+        waittillframeend;
+    }
+
+    do
+        i--;
+    while(i > 0);
+
+    switch(items.size)
+    {
+        case 0:
+            return false;
+        case 1:
+        {
+            return true;
+        }
+        default:
+            return undefined;
+    }
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter_list
+      (identifier))
+    (block
+      (for_statement
+        (assignment_expression
+          (identifier)
+          (number))
+        (binary_expression
+          (identifier)
+          (member_expression
+            (identifier)
+            (identifier)))
+        (update_expression
+          (identifier))
+        (block
+          (if_statement
+            (parenthesized_expression
+              (binary_expression
+                (subscript_expression
+                  (identifier)
+                  (identifier))
+                (undefined)))
+            (continue_statement)
+            (if_statement
+              (parenthesized_expression
+                (unary_expression
+                  (member_expression
+                    (subscript_expression
+                      (identifier)
+                      (identifier))
+                    (identifier))))
+              (break_statement)))))
+      (while_statement
+        (parenthesized_expression
+          (boolean))
+        (block
+          (wait_statement
+            (number))
+          (waittillframeend_statement)))
+      (do_statement
+        (expression_statement
+          (update_expression
+            (identifier)))
+        (parenthesized_expression
+          (binary_expression
+            (identifier)
+            (number))))
+      (switch_statement
+        (parenthesized_expression
+          (member_expression
+            (identifier)
+            (identifier)))
+        (case_clause
+          (number)
+          (return_statement
+            (boolean)))
+        (case_clause
+          (number)
+          (block
+            (return_statement
+              (boolean))))
+        (default_clause
+          (return_statement
+            (undefined)))))))
+
+==================
+Values and assignments
+==================
+
+values()
+{
+    empty = [];
+    values = [1, 2, 3];
+    origin = (1, 2.5, -3);
+    level.callback = ::done;
+    localized = &"J4L_MESSAGE";
+    cvar = #"sv_hostname";
+    animation = %american_buffalo_backgateup;
+    selected = enabled ? values[0] : 0;
+    values[0] += 1;
+}
+
+---
+
+(source_file
+  (function_definition
+    (identifier)
+    (parameter_list)
+    (block
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (array)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (array
+            (number)
+            (number)
+            (number))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (vector
+            (number)
+            (number)
+            (unary_expression
+              (number)))))
+      (expression_statement
+        (assignment_expression
+          (member_expression
+            (identifier)
+            (identifier))
+          (function_reference
+            (identifier))))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (localized_string)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (cvar_string)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (animation)))
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (ternary_expression
+            (identifier)
+            (subscript_expression
+              (identifier)
+              (number))
+            (number))))
+      (expression_statement
+        (assignment_expression
+          (subscript_expression
+            (identifier)
+            (number))
+          (number))))))
+
+==================
+Developer and animtree directives
+==================
+
+#using_animtree("generic_human");
+#animtree generic_human;
+
+/#
+developer_only()
+{
+    println("developer");
+}
+#/
+
+---
+
+(source_file
+  (preproc_using_animtree
+    (argument_list
+      (string)))
+  (preproc_animtree
+    (identifier))
+  (developer_block
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (block
+        (expression_statement
+          (call_expression
+            (identifier)
+            (argument_list
+              (string))))))))

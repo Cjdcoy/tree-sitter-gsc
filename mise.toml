@@ -1,0 +1,50 @@
+[tools]
+node = "lts"
+tree-sitter = "latest"
+
+[settings]
+lockfile = true
+
+[tasks.generate]
+description = "Generate parser C sources"
+run = "tree-sitter generate"
+
+[tasks.test]
+description = "Run grammar corpus tests"
+depends = ["generate"]
+run = "tree-sitter test"
+
+[tasks."test:update"]
+description = "Regenerate expected corpus trees"
+depends = ["generate"]
+run = "tree-sitter test --update"
+
+[tasks."test:external"]
+description = "Parse an external GSC corpus; requires GSC_ROOT"
+depends = ["generate"]
+run = '''
+bash -lc '
+gsc_root="${GSC_ROOT:?GSC_ROOT must point to an external GSC corpus}"
+first_gsc="$(find "$gsc_root" -type f -name "*.gsc" -print -quit)"
+if [[ -z "$first_gsc" ]]; then
+  echo "No .gsc files found under $gsc_root" >&2
+  exit 1
+fi
+find "$gsc_root" -type f -name "*.gsc" -print0 |
+  xargs -0 tree-sitter parse --quiet --stat
+'
+'''
+
+[tasks."test:codebase-memory"]
+description = "Run isolated codebase-memory-mcp GSC corpus gate; requires CBM_ROOT"
+depends = ["generate"]
+run = "node scripts/test-codebase-memory.mjs"
+
+[tasks."test:vscode-cod-gsc"]
+description = "Compare pinned vscode-cod-gsc fixtures; requires VSCODE_COD_GSC_ROOT"
+depends = ["generate"]
+run = "node scripts/test-vscode-cod-gsc.mjs"
+
+[tasks.check]
+description = "Run public grammar checks"
+depends = ["test"]

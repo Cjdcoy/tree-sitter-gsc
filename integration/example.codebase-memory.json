@@ -1,0 +1,13 @@
+{
+  "module_resolution": {
+    "source_roots": [
+      "gsc/cod2",
+      "gsc/shared"
+    ],
+    "aliases": {},
+    "extensions": [
+      ".gsc"
+    ],
+    "case_insensitive": true
+  }
+}
