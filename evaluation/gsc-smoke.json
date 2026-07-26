@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "suite_id": "gsc-codebase-memory-smoke-v1",
+  "description": "A deterministic smoke suite for validating paired Graph and Explorer agent runs before using a real GSC repository.",
+  "target": {
+    "repository": "test/fixtures/codebase-memory",
+    "project_name": "gsc-agent-fixture"
+  },
+  "conditions": {
+    "graph": {
+      "description": "Use codebase-memory-mcp graph tools for code discovery.",
+      "instructions": [
+        "Use codebase-memory-mcp graph tools for code discovery and evidence.",
+        "Do not inspect repository files with shell search or direct file-reading tools.",
+        "Record every code-discovery tool name in each answer's tool_calls array."
+      ],
+      "forbidden_tools": [
+        "exec",
+        "exec_command",
+        "read",
+        "read_file",
+        "grep",
+        "glob"
+      ]
+    },
+    "explorer": {
+      "description": "Use ordinary text search and file reading without the graph.",
+      "instructions": [
+        "Use ordinary text search and file-reading tools for code discovery.",
+        "Do not call any codebase-memory-mcp graph tool.",
+        "Record every code-discovery tool name in each answer's tool_calls array."
+      ],
+      "forbidden_tools": [
+        "get_architecture",
+        "get_code_snippet",
+        "get_graph_schema",
+        "query_graph",
+        "search_code",
+        "search_graph",
+        "trace_call_path",
+        "trace_path"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "d1-duplicate-definitions",
+      "dimension": "D1",
+      "prompt": "How many functions named ambiguous_target exist, and which files define them?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "shared/duplicates/first.gsc",
+            "shared/duplicates/second.gsc"
+          ]
+        },
+        "observations": {
+          "definition_count": 2,
+          "is_name_ambiguous": true
+        }
+      }
+    },
+    {
+      "id": "d2-call-resolution",
+      "dimension": "D2",
+      "prompt": "Starting at main(), identify the definitions reached by local_target() and FixtureAlias\\helper::qualified_target(). Include the destination file for each call.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "cod2/main.gsc",
+            "shared/lib/helper.gsc"
+          ]
+        },
+        "observations": {
+          "local_target_file": "cod2/main.gsc",
+          "qualified_target_file": "shared/lib/helper.gsc",
+          "qualified_module_path": "FixtureAlias\\helper"
+        }
+      }
+    },
+    {
+      "id": "d3-targeted-retrieval",
+      "dimension": "D3",
+      "prompt": "Retrieve local_target() exactly. Report its file, one-based start and end lines, and exact source text including the final newline.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "cod2/main.gsc"
+          ]
+        },
+        "observations": {
+          "start_line": 10,
+          "end_line": 13,
+          "source": "local_target()\n{\n    return \"local\";\n}\n"
+        }
+      }
+    },
+    {
+      "id": "d4-include-overlay",
+      "dimension": "D4",
+      "prompt": "What file does #include FixtureAlias\\helper resolve to, and which module-resolution settings make that mapping possible?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "cod2/main.gsc",
+            "shared/lib/helper.gsc"
+          ]
+        },
+        "observations": {
+          "raw_include": "FixtureAlias\\helper",
+          "resolved_file": "shared/lib/helper.gsc",
+          "alias_target": "lib",
+          "extension": ".gsc",
+          "case_insensitive": true
+        }
+      }
+    },
+    {
+      "id": "d5-unresolved-ambiguity",
+      "dimension": "D5",
+      "prompt": "Should the bare ambiguous_target() call in main() resolve to one function? Report the candidate count and candidate files.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "shared/duplicates/first.gsc",
+            "shared/duplicates/second.gsc"
+          ]
+        },
+        "observations": {
+          "should_resolve": false,
+          "candidate_count": 2
+        }
+      }
+    }
+  ]
+}

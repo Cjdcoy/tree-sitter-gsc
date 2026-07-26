@@ -48,3 +48,11 @@ run = "node scripts/test-vscode-cod-gsc.mjs"
 [tasks.check]
 description = "Run public grammar checks"
 depends = ["test"]
+
+[tasks."eval:check"]
+description = "Validate the GSC agent-evaluation suite and scorer"
+run = """
+node scripts/gsc-agent-eval.mjs validate
+node scripts/gsc-agent-eval.mjs validate test/fixtures/agent-eval/scorer-pass.json
+node scripts/gsc-agent-eval.mjs self-test
+"""
