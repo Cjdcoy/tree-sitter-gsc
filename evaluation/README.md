@@ -55,10 +55,40 @@ available for blind human or LLM judging.
 `test/fixtures/agent-eval/scorer-pass.json` is scorer test data. It is not a
 benchmark result.
 
-## Next suite
+## zPAM3 suite
 
-The first real suite should use a pinned snapshot of a substantial CoD2 GSC
-repository and contain 20–30 tasks split across definition discovery, call and
-include tracing, exact retrieval, subsystem understanding, and negative or
-ambiguous lookups. Run each condition at least five times with the same model,
-prompt, context limit, and time limit.
+`zpam3-v1.json` is the public real-world suite. It pins
+[`eyza-cod2/zpam3`](https://github.com/eyza-cod2/zpam3) commit
+`83285ae8d2ba65640cf46318feade49463652a06` and contains 20 tasks across
+definition discovery, call tracing, exact retrieval, module resolution, and
+negative or ambiguous lookups.
+
+Prepare the external corpus without copying zPAM source into this repository:
+
+```sh
+git clone https://github.com/eyza-cod2/zpam3.git /path/to/zpam3
+git -C /path/to/zpam3 checkout 83285ae8d2ba65640cf46318feade49463652a06
+ZPAM3_ROOT=/path/to/zpam3 mise run test:zpam3
+cp evaluation/zpam3.codebase-memory.json /path/to/zpam3/.codebase-memory.json
+codebase-memory-mcp cli index_repository \
+  --repo-path /path/to/zpam3 \
+  --name zpam3-gsc-benchmark-83285ae \
+  --mode full
+```
+
+Validate the suite or generate condition prompts with:
+
+```sh
+node scripts/gsc-agent-eval.mjs validate --suite evaluation/zpam3-v1.json
+node scripts/gsc-agent-eval.mjs prompt graph --suite evaluation/zpam3-v1.json
+node scripts/gsc-agent-eval.mjs prompt explorer --suite evaluation/zpam3-v1.json
+```
+
+The zPAM3 repository does not currently declare a software license. This
+benchmark therefore references and clones the upstream repository only for
+validation; it does not vendor or quote zPAM source. The committed suite stores
+only the repository URL, pinned revision, symbol names, paths, line numbers, and
+structural relationships.
+
+Run each condition at least five times with the same model, prompt, context
+limit, and time limit before drawing performance conclusions.

@@ -65,6 +65,12 @@ function validateSuite(suite) {
   expect(typeof suite.suite_id === "string" && suite.suite_id, "suite_id is required");
   expect(typeof suite.target?.repository === "string", "target.repository is required");
   expect(typeof suite.target?.project_name === "string", "target.project_name is required");
+  if (suite.target.revision !== undefined) {
+    expect(
+      typeof suite.target.revision === "string" && suite.target.revision,
+      "target.revision must be a non-empty string",
+    );
+  }
   expect(suite.conditions && typeof suite.conditions === "object", "conditions are required");
   expect(Array.isArray(suite.tasks) && suite.tasks.length > 0, "tasks must be a non-empty array");
 
@@ -98,6 +104,12 @@ function validateRun(run, suite) {
     typeof run.repository_revision === "string" && run.repository_revision,
     "repository_revision is required",
   );
+  if (suite.target.revision) {
+    expect(
+      run.repository_revision === suite.target.revision,
+      `run repository_revision must be ${suite.target.revision}`,
+    );
+  }
   expect(Array.isArray(run.answers), "answers must be an array");
 
   const expectedIds = suite.tasks.map((task) => task.id);
@@ -260,11 +272,12 @@ function promptFor(conditionName, suite) {
     `Suite: ${suite.suite_id}`,
     `Condition: ${conditionName} — ${condition.description}`,
     `Target repository: ${suite.target.repository}`,
+    `Target revision: ${suite.target.revision ?? "<provided separately>"}`,
     `Graph project name: ${suite.target.project_name}`,
     "",
     "Rules:",
     ...condition.instructions.map((instruction) => `- ${instruction}`),
-    "- Do not inspect evaluation/gsc-smoke.json; it contains the hidden scoring oracle.",
+    "- Do not inspect evaluation suite JSON files; they contain hidden scoring oracles.",
     "- Complete every task and return exactly one JSON object with no Markdown fence.",
     "",
     "Tasks:",
@@ -322,6 +335,24 @@ try {
     const perfect = scoreRun(fixture, suite);
     expect(perfect.condition_valid, "self-test: valid tool usage was rejected");
     expect(perfect.quality === 1, "self-test: perfect fixture did not score 1");
+
+    const pinnedSuite = structuredClone(suite);
+    pinnedSuite.target.revision = fixture.repository_revision;
+    validateSuite(pinnedSuite);
+    validateRun(fixture, pinnedSuite);
+    expect(
+      promptFor("graph", pinnedSuite).includes(`Target revision: ${fixture.repository_revision}`),
+      "self-test: pinned revision is missing from the generated prompt",
+    );
+    const wrongRevision = structuredClone(fixture);
+    wrongRevision.repository_revision = "wrong-revision";
+    let rejectedWrongRevision = false;
+    try {
+      validateRun(wrongRevision, pinnedSuite);
+    } catch (error) {
+      rejectedWrongRevision = error.message.includes("repository_revision");
+    }
+    expect(rejectedWrongRevision, "self-test: wrong repository revision was accepted");
 
     const leaking = structuredClone(fixture);
     leaking.answers[0].tool_calls.push("functions.exec_command");

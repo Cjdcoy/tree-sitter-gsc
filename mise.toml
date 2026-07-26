@@ -45,6 +45,11 @@ description = "Compare pinned vscode-cod-gsc fixtures; requires VSCODE_COD_GSC_R
 depends = ["generate"]
 run = "node scripts/test-vscode-cod-gsc.mjs"
 
+[tasks."test:zpam3"]
+description = "Parse the pinned public zPAM3 corpus; requires ZPAM3_ROOT"
+depends = ["generate"]
+run = "node scripts/test-zpam3.mjs"
+
 [tasks."vendor:check"]
 description = "Check codebase-memory-mcp vendored GSC sources; requires CBM_ROOT"
 depends = ["generate"]
@@ -63,6 +68,7 @@ depends = ["test"]
 description = "Validate the GSC agent-evaluation suite and scorer"
 run = """
 node scripts/gsc-agent-eval.mjs validate
+node scripts/gsc-agent-eval.mjs validate --suite evaluation/zpam3-v1.json
 node scripts/gsc-agent-eval.mjs validate test/fixtures/agent-eval/scorer-pass.json
 node scripts/gsc-agent-eval.mjs self-test
 """
