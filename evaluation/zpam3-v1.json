@@ -196,7 +196,7 @@
           ]
         },
         "observations": {
-          "caller_count": 68,
+          "caller_count": 72,
           "is_top_inbound_call_hotspot": true
         }
       }
