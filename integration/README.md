@@ -39,4 +39,14 @@ lookup is case-insensitive and tries the optional `.gsc` extension.
 
 The patch vendors `src/parser.c`, `src/tree_sitter/parser.h`, and `LICENSE`
 from this repository. Regenerate with `mise run generate` before refreshing
-the patch after grammar changes.
+the patch after grammar changes. Check or update those files in a local
+codebase-memory-mcp checkout with:
+
+```sh
+CBM_ROOT=/path/to/codebase-memory-mcp mise run vendor:check
+CBM_ROOT=/path/to/codebase-memory-mcp mise run vendor:sync
+```
+
+`vendor:check` is read-only. `vendor:sync` only updates the three vendored
+files; review the codebase-memory-mcp diff and refresh this integration patch
+afterward.

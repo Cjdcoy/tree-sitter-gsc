@@ -45,6 +45,16 @@ description = "Compare pinned vscode-cod-gsc fixtures; requires VSCODE_COD_GSC_R
 depends = ["generate"]
 run = "node scripts/test-vscode-cod-gsc.mjs"
 
+[tasks."vendor:check"]
+description = "Check codebase-memory-mcp vendored GSC sources; requires CBM_ROOT"
+depends = ["generate"]
+run = "node scripts/sync-codebase-memory-vendor.mjs --check"
+
+[tasks."vendor:sync"]
+description = "Update codebase-memory-mcp vendored GSC sources; requires CBM_ROOT"
+depends = ["generate"]
+run = "node scripts/sync-codebase-memory-vendor.mjs --write"
+
 [tasks.check]
 description = "Run public grammar checks"
 depends = ["test"]
