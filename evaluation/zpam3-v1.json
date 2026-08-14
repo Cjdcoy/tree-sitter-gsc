@@ -1,0 +1,446 @@
+{
+  "schema_version": 1,
+  "suite_id": "zpam3-gsc-agent-benchmark-v1",
+  "target": {
+    "repository": "https://github.com/eyza-cod2/zpam3.git",
+    "revision": "83285ae8d2ba65640cf46318feade49463652a06",
+    "project_name": "zpam3-gsc-benchmark-83285ae"
+  },
+  "conditions": {
+    "graph": {
+      "description": "Use codebase-memory-mcp graph tools for code discovery.",
+      "instructions": [
+      "Use codebase-memory-mcp graph tools for code discovery and evidence.",
+      "Do not inspect repository files with shell search or direct file-reading tools.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, tool_calls may name only get_architecture, get_code_snippet, get_graph_schema, index_status, list_projects, query_graph, search_graph, trace_path, list_mcp_resources, and list_mcp_resource_templates; never report exec, exec_command, tool_search_tool, or an uninvoked tool."
+      ],
+      "forbidden_tools": [
+        "exec",
+        "exec_command",
+        "read",
+        "read_file",
+        "grep",
+        "glob"
+      ]
+    },
+    "explorer": {
+      "description": "Use ordinary text search and file reading without the graph.",
+      "instructions": [
+      "Use ordinary text search and file-reading tools for code discovery.",
+      "Do not call any codebase-memory-mcp graph tool.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, report only ordinary exploration tools that actually produced invocation events; never report graph tools, tool_search_tool, or an uninvoked tool."
+      ],
+      "forbidden_tools": [
+        "get_architecture",
+        "get_code_snippet",
+        "get_graph_schema",
+        "query_graph",
+        "search_code",
+        "search_graph",
+        "trace_call_path",
+        "trace_path"
+      ]
+    },
+    "hybrid": {
+      "description": "Use codebase-memory-mcp graph tools together with ordinary text search and file reading.",
+      "instructions": [
+      "Use both codebase-memory-mcp graph tools and ordinary shell-based repository exploration for discovery and evidence.",
+      "Use graph tools for structural definition, caller, and dependency questions; use targeted shell search or file reads to verify or fill gaps.",
+      "Batch independent work within each tool family where possible, and avoid repeating status or schema queries after they are known.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, report only graph or ordinary exploration tools that actually produced invocation events; never report tool_search_tool or an uninvoked tool."
+      ],
+      "forbidden_tools": []
+    }
+  },
+  "tasks": [
+    {
+      "id": "d1-hud-bomb-timer-definition",
+      "dimension": "D1",
+      "prompt": "How many functions named HUD_Player_ShowBombTimer are defined, and which file defines it?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/sd.gsc"
+          ]
+        },
+        "observations": {
+          "definition_count": 1
+        }
+      }
+    },
+    {
+      "id": "d1-load-toggle-definition",
+      "dimension": "D1",
+      "prompt": "How many functions named LoadToggleSubPamMode are defined, and which file defines it?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/rules.gsc"
+          ]
+        },
+        "observations": {
+          "definition_count": 1
+        }
+      }
+    },
+    {
+      "id": "d1-map-rcon-command-definition",
+      "dimension": "D1",
+      "prompt": "How many functions named mapOptions_updateRconCommand are defined, and which file defines it?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_menu_rcon_map.gsc"
+          ]
+        },
+        "observations": {
+          "definition_count": 1
+        }
+      }
+    },
+    {
+      "id": "d1-stat-id-definition",
+      "dimension": "D1",
+      "prompt": "How many functions named getStatId are defined, and which file defines it?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_player_stat.gsc"
+          ]
+        },
+        "observations": {
+          "definition_count": 1
+        }
+      }
+    },
+    {
+      "id": "d2-rule-loader-callers",
+      "dimension": "D2",
+      "prompt": "List the direct callers of LoadToggleSubPamMode and report the direct caller count.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/rules.gsc"
+          ]
+        },
+        "observations": {
+          "caller_count": 7,
+          "callers": {
+            "Load_CTF_Rules": true,
+            "Load_DM_Rules": true,
+            "Load_HQ_Rules": true,
+            "Load_HTF_Rules": true,
+            "Load_RE_Rules": true,
+            "Load_SD_Rules": true,
+            "Load_TDM_Rules": true
+          }
+        }
+      }
+    },
+    {
+      "id": "d2-stat-id-callers",
+      "dimension": "D2",
+      "prompt": "List the direct callers of getStatId and report the direct caller count.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_player_stat.gsc"
+          ]
+        },
+        "observations": {
+          "caller_count": 9,
+          "callers": {
+            "AddAssist": true,
+            "AddDamage": true,
+            "AddDeath": true,
+            "AddDefuse": true,
+            "AddGrenade": true,
+            "AddKill": true,
+            "AddPlant": true,
+            "AddScore": true,
+            "getStats": true
+          }
+        }
+      }
+    },
+    {
+      "id": "d2-match-description-callers",
+      "dimension": "D2",
+      "prompt": "List the direct callers of generateMatchDescriptionDebounced and report the direct caller count.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_matchinfo.gsc",
+            "source/maps/mp/gametypes/_readyup.gsc"
+          ]
+        },
+        "observations": {
+          "caller_count": 6,
+          "callers": {
+            "Check_All_Ready": true,
+            "onConnected": true,
+            "onDisconnect": true,
+            "onJoinedTeam": true,
+            "onSpawned": true,
+            "playerNames": true
+          }
+        }
+      }
+    },
+    {
+      "id": "d2-event-listener-hotspot",
+      "dimension": "D2",
+      "prompt": "How many functions directly call addEventListener, where is addEventListener defined, and is it the highest-inbound-call function in this snapshot?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/_global.gsc"
+          ]
+        },
+        "observations": {
+          "caller_count": 72,
+          "is_top_inbound_call_hotspot": true
+        }
+      }
+    },
+    {
+      "id": "d3-event-listener-location",
+      "dimension": "D3",
+      "prompt": "Locate addEventListener exactly. Report its file and one-based start and end lines.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/_global.gsc"
+          ]
+        },
+        "observations": {
+          "start_line": 28,
+          "end_line": 31
+        }
+      }
+    },
+    {
+      "id": "d3-match-description-location",
+      "dimension": "D3",
+      "prompt": "Locate generateMatchDescriptionDebounced exactly. Report its file and one-based start and end lines.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_matchinfo.gsc"
+          ]
+        },
+        "observations": {
+          "start_line": 530,
+          "end_line": 541
+        }
+      }
+    },
+    {
+      "id": "d3-string-starts-with-location",
+      "dimension": "D3",
+      "prompt": "Locate the startsWith definition specifically in global/string.gsc. Report its file and one-based start and end lines.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/string.gsc"
+          ]
+        },
+        "observations": {
+          "start_line": 2,
+          "end_line": 12
+        }
+      }
+    },
+    {
+      "id": "d3-record-secure-string-location",
+      "dimension": "D3",
+      "prompt": "Locate the getSecureString definition specifically in _record.gsc. Report its file and one-based start and end lines.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_record.gsc"
+          ]
+        },
+        "observations": {
+          "start_line": 258,
+          "end_line": 288
+        }
+      }
+    },
+    {
+      "id": "d4-global-include-resolution",
+      "dimension": "D4",
+      "prompt": "In re.gsc, resolve '#include maps\\mp\\gametypes\\global\\_global'. Which file is imported, and which files supply the bare InitSystems and addEventListener calls in re.gsc main()?",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/re.gsc",
+            "source/maps/mp/gametypes/global/_global.gsc"
+          ]
+        },
+        "observations": {
+          "raw_include": "maps\\mp\\gametypes\\global\\_global",
+          "resolved_file": "source/maps/mp/gametypes/global/_global.gsc",
+          "InitSystems_file": "source/maps/mp/gametypes/global/_global.gsc",
+          "addEventListener_file": "source/maps/mp/gametypes/global/_global.gsc"
+        }
+      }
+    },
+    {
+      "id": "d4-toujane-startup-resolution",
+      "dimension": "D4",
+      "prompt": "Resolve the three path-qualified calls made by source/maps/mp/mp_toujane.gsc main(): maps\\mp\\_bug_fix::toujane, maps\\mp\\mp_toujane_fx::main, and maps\\mp\\_load::main. Report each destination file.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/mp_toujane.gsc",
+            "source/maps/mp/_bug_fix.gsc",
+            "source/maps/mp/mp_toujane_fx.gsc",
+            "source/maps/mp/_load.gsc"
+          ]
+        },
+        "observations": {
+          "bug_fix_file": "source/maps/mp/_bug_fix.gsc",
+          "bug_fix_function": "toujane",
+          "fx_file": "source/maps/mp/mp_toujane_fx.gsc",
+          "fx_function": "main",
+          "load_file": "source/maps/mp/_load.gsc",
+          "load_function": "main"
+        }
+      }
+    },
+    {
+      "id": "d4-load-threaded-resolution",
+      "dimension": "D4",
+      "prompt": "Resolve the two path-qualified threaded calls at the start of source/maps/mp/_load.gsc main(): maps\\mp\\_minefields::minefields and maps\\mp\\_shutter::main. Report each destination file.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/_load.gsc",
+            "source/maps/mp/_minefields.gsc",
+            "source/maps/mp/_shutter.gsc"
+          ]
+        },
+        "observations": {
+          "minefields_file": "source/maps/mp/_minefields.gsc",
+          "minefields_function": "minefields",
+          "shutter_file": "source/maps/mp/_shutter.gsc",
+          "shutter_function": "main",
+          "calls_are_threaded": true
+        }
+      }
+    },
+    {
+      "id": "d4-rhine-startup-resolution",
+      "dimension": "D4",
+      "prompt": "Resolve the two path-qualified calls at the start of source/maps/mp/mp_rhine.gsc main(): maps\\mp\\mp_rhine_fx::main and maps\\mp\\_load::main. Report each destination file.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/mp_rhine.gsc",
+            "source/maps/mp/mp_rhine_fx.gsc",
+            "source/maps/mp/_load.gsc"
+          ]
+        },
+        "observations": {
+          "fx_file": "source/maps/mp/mp_rhine_fx.gsc",
+          "fx_function": "main",
+          "load_file": "source/maps/mp/_load.gsc",
+          "load_function": "main"
+        }
+      }
+    },
+    {
+      "id": "d5-starts-with-ambiguity",
+      "dimension": "D5",
+      "prompt": "Should a bare lookup for startsWith resolve to one function? Report the candidate count and candidate files.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/global/_global.gsc",
+            "source/maps/mp/gametypes/global/string.gsc"
+          ]
+        },
+        "observations": {
+          "should_resolve": false,
+          "candidate_count": 2
+        }
+      }
+    },
+    {
+      "id": "d5-secure-string-ambiguity",
+      "dimension": "D5",
+      "prompt": "Should a bare lookup for getSecureString resolve to one function? Report the candidate count and candidate files.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/_record.gsc",
+            "source/maps/mp/gametypes/_teamname.gsc"
+          ]
+        },
+        "observations": {
+          "should_resolve": false,
+          "candidate_count": 2
+        }
+      }
+    },
+    {
+      "id": "d5-play-sound-ambiguity",
+      "dimension": "D5",
+      "prompt": "Should a bare lookup for playSoundOnPlayers resolve to one function? Report the candidate count and candidate files.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": [
+            "source/maps/mp/gametypes/ctf.gsc",
+            "source/maps/mp/gametypes/hq.gsc",
+            "source/maps/mp/gametypes/htf.gsc",
+            "source/maps/mp/gametypes/re.gsc",
+            "source/maps/mp/gametypes/sd.gsc",
+            "source/maps/mp/gametypes/tdm.gsc"
+          ]
+        },
+        "observations": {
+          "should_resolve": false,
+          "candidate_count": 6
+        }
+      }
+    },
+    {
+      "id": "d5-missing-function",
+      "dimension": "D5",
+      "prompt": "Does a function named zpam3BenchmarkDefinitelyMissing exist in this snapshot? Report the definition count and whether the lookup should resolve.",
+      "oracle": {
+        "files": {
+          "mode": "exact",
+          "values": []
+        },
+        "observations": {
+          "definition_count": 0,
+          "should_resolve": false
+        }
+      }
+    }
+  ]
+}

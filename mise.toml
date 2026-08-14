@@ -45,6 +45,31 @@ description = "Compare pinned vscode-cod-gsc fixtures; requires VSCODE_COD_GSC_R
 depends = ["generate"]
 run = "node scripts/test-vscode-cod-gsc.mjs"
 
+[tasks."test:zpam3"]
+description = "Parse the pinned public zPAM3 corpus; requires ZPAM3_ROOT"
+depends = ["generate"]
+run = "node scripts/test-zpam3.mjs"
+
+[tasks."vendor:check"]
+description = "Check codebase-memory-mcp vendored GSC sources; requires CBM_ROOT"
+depends = ["generate"]
+run = "node scripts/sync-codebase-memory-vendor.mjs --check"
+
+[tasks."vendor:sync"]
+description = "Update codebase-memory-mcp vendored GSC sources; requires CBM_ROOT"
+depends = ["generate"]
+run = "node scripts/sync-codebase-memory-vendor.mjs --write"
+
 [tasks.check]
 description = "Run public grammar checks"
 depends = ["test"]
+
+[tasks."eval:check"]
+description = "Validate the GSC agent-evaluation suite, scorer, and benchmark runner"
+run = """
+node scripts/gsc-agent-eval.mjs validate
+node scripts/gsc-agent-eval.mjs validate --suite evaluation/zpam3-v1.json
+node scripts/gsc-agent-eval.mjs validate test/fixtures/agent-eval/scorer-pass.json
+node scripts/gsc-agent-eval.mjs self-test
+node --test test/run-gsc-agent-benchmark.test.mjs
+"""

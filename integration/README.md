@@ -5,6 +5,9 @@ function/call/include extraction, configured runtime-overlay resolution,
 grammar metadata, tests, and language-count documentation to
 `DeusData/codebase-memory-mcp`.
 
+The patch is based on and applies cleanly to codebase-memory-mcp commit
+`7d6cdb2`. Revalidate that baseline whenever the patch is regenerated.
+
 GSC call resolution preserves receiver, raw module path, function leaf, thread,
 and indirect-call state. Qualified calls use the configured overlay resolver;
 unqualified calls resolve local definitions, then included modules, then only a
@@ -13,7 +16,7 @@ project-wide unique name. Ambiguous and runtime-indirect targets remain unresolv
 Apply from a clean checkout:
 
 ```sh
-git apply /home/dcoy/work/perso/cod2-serv/tree-sitter-gsc/integration/codebase-memory-mcp.patch
+git apply /path/to/tree-sitter-gsc/integration/codebase-memory-mcp.patch
 make -f Makefile.cbm -j"$(nproc)" test-par
 ```
 
@@ -39,4 +42,17 @@ lookup is case-insensitive and tries the optional `.gsc` extension.
 
 The patch vendors `src/parser.c`, `src/tree_sitter/parser.h`, and `LICENSE`
 from this repository. Regenerate with `mise run generate` before refreshing
-the patch after grammar changes.
+the patch after grammar changes. Check or update those files in a local
+codebase-memory-mcp checkout with:
+
+```sh
+CBM_ROOT=/path/to/codebase-memory-mcp mise run vendor:check
+CBM_ROOT=/path/to/codebase-memory-mcp mise run vendor:sync
+```
+
+`vendor:check` is read-only. `vendor:sync` only updates the three vendored
+files; review the codebase-memory-mcp diff and refresh this integration patch
+afterward.
+
+Always run the integration commands through `mise`; that selects the locked
+Tree-sitter CLI rather than an unrelated system installation.

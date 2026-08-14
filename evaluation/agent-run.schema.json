@@ -1,0 +1,1149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/tree-sitter-gsc/agent-run.schema.json",
+  "title": "GSC agent benchmark run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "suite_id",
+    "run_id",
+    "condition",
+    "model",
+    "repository_revision",
+    "metrics",
+    "answers"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "suite_id": {
+      "type": "string",
+      "enum": [
+        "zpam3-gsc-agent-benchmark-v1"
+      ]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "graph",
+        "explorer",
+        "hybrid"
+      ]
+    },
+    "model": {
+      "type": "string"
+    },
+    "repository_revision": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wall_ms",
+        "input_tokens",
+        "output_tokens"
+      ],
+      "properties": {
+        "wall_ms": {
+          "type": "number"
+        },
+        "input_tokens": {
+          "type": "number"
+        },
+        "output_tokens": {
+          "type": "number"
+        }
+      }
+    },
+    "answers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "d1-hud-bomb-timer-definition",
+        "d1-load-toggle-definition",
+        "d1-map-rcon-command-definition",
+        "d1-stat-id-definition",
+        "d2-rule-loader-callers",
+        "d2-stat-id-callers",
+        "d2-match-description-callers",
+        "d2-event-listener-hotspot",
+        "d3-event-listener-location",
+        "d3-match-description-location",
+        "d3-string-starts-with-location",
+        "d3-record-secure-string-location",
+        "d4-global-include-resolution",
+        "d4-toujane-startup-resolution",
+        "d4-load-threaded-resolution",
+        "d4-rhine-startup-resolution",
+        "d5-starts-with-ambiguity",
+        "d5-secure-string-ambiguity",
+        "d5-play-sound-ambiguity",
+        "d5-missing-function"
+      ],
+      "properties": {
+        "d1-hud-bomb-timer-definition": {
+          "$ref": "#/$defs/answer-d1-hud-bomb-timer-definition"
+        },
+        "d1-load-toggle-definition": {
+          "$ref": "#/$defs/answer-d1-load-toggle-definition"
+        },
+        "d1-map-rcon-command-definition": {
+          "$ref": "#/$defs/answer-d1-map-rcon-command-definition"
+        },
+        "d1-stat-id-definition": {
+          "$ref": "#/$defs/answer-d1-stat-id-definition"
+        },
+        "d2-rule-loader-callers": {
+          "$ref": "#/$defs/answer-d2-rule-loader-callers"
+        },
+        "d2-stat-id-callers": {
+          "$ref": "#/$defs/answer-d2-stat-id-callers"
+        },
+        "d2-match-description-callers": {
+          "$ref": "#/$defs/answer-d2-match-description-callers"
+        },
+        "d2-event-listener-hotspot": {
+          "$ref": "#/$defs/answer-d2-event-listener-hotspot"
+        },
+        "d3-event-listener-location": {
+          "$ref": "#/$defs/answer-d3-event-listener-location"
+        },
+        "d3-match-description-location": {
+          "$ref": "#/$defs/answer-d3-match-description-location"
+        },
+        "d3-string-starts-with-location": {
+          "$ref": "#/$defs/answer-d3-string-starts-with-location"
+        },
+        "d3-record-secure-string-location": {
+          "$ref": "#/$defs/answer-d3-record-secure-string-location"
+        },
+        "d4-global-include-resolution": {
+          "$ref": "#/$defs/answer-d4-global-include-resolution"
+        },
+        "d4-toujane-startup-resolution": {
+          "$ref": "#/$defs/answer-d4-toujane-startup-resolution"
+        },
+        "d4-load-threaded-resolution": {
+          "$ref": "#/$defs/answer-d4-load-threaded-resolution"
+        },
+        "d4-rhine-startup-resolution": {
+          "$ref": "#/$defs/answer-d4-rhine-startup-resolution"
+        },
+        "d5-starts-with-ambiguity": {
+          "$ref": "#/$defs/answer-d5-starts-with-ambiguity"
+        },
+        "d5-secure-string-ambiguity": {
+          "$ref": "#/$defs/answer-d5-secure-string-ambiguity"
+        },
+        "d5-play-sound-ambiguity": {
+          "$ref": "#/$defs/answer-d5-play-sound-ambiguity"
+        },
+        "d5-missing-function": {
+          "$ref": "#/$defs/answer-d5-missing-function"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "answer-d1-hud-bomb-timer-definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_count"
+          ],
+          "properties": {
+            "definition_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d1-load-toggle-definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_count"
+          ],
+          "properties": {
+            "definition_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d1-map-rcon-command-definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_count"
+          ],
+          "properties": {
+            "definition_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d1-stat-id-definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_count"
+          ],
+          "properties": {
+            "definition_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d2-rule-loader-callers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caller_count",
+            "callers"
+          ],
+          "properties": {
+            "caller_count": {
+              "type": "integer"
+            },
+            "callers": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "Load_CTF_Rules",
+                "Load_DM_Rules",
+                "Load_HQ_Rules",
+                "Load_HTF_Rules",
+                "Load_RE_Rules",
+                "Load_SD_Rules",
+                "Load_TDM_Rules"
+              ],
+              "properties": {
+                "Load_CTF_Rules": {
+                  "type": "boolean"
+                },
+                "Load_DM_Rules": {
+                  "type": "boolean"
+                },
+                "Load_HQ_Rules": {
+                  "type": "boolean"
+                },
+                "Load_HTF_Rules": {
+                  "type": "boolean"
+                },
+                "Load_RE_Rules": {
+                  "type": "boolean"
+                },
+                "Load_SD_Rules": {
+                  "type": "boolean"
+                },
+                "Load_TDM_Rules": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d2-stat-id-callers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caller_count",
+            "callers"
+          ],
+          "properties": {
+            "caller_count": {
+              "type": "integer"
+            },
+            "callers": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "AddAssist",
+                "AddDamage",
+                "AddDeath",
+                "AddDefuse",
+                "AddGrenade",
+                "AddKill",
+                "AddPlant",
+                "AddScore",
+                "getStats"
+              ],
+              "properties": {
+                "AddAssist": {
+                  "type": "boolean"
+                },
+                "AddDamage": {
+                  "type": "boolean"
+                },
+                "AddDeath": {
+                  "type": "boolean"
+                },
+                "AddDefuse": {
+                  "type": "boolean"
+                },
+                "AddGrenade": {
+                  "type": "boolean"
+                },
+                "AddKill": {
+                  "type": "boolean"
+                },
+                "AddPlant": {
+                  "type": "boolean"
+                },
+                "AddScore": {
+                  "type": "boolean"
+                },
+                "getStats": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d2-match-description-callers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caller_count",
+            "callers"
+          ],
+          "properties": {
+            "caller_count": {
+              "type": "integer"
+            },
+            "callers": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "Check_All_Ready",
+                "onConnected",
+                "onDisconnect",
+                "onJoinedTeam",
+                "onSpawned",
+                "playerNames"
+              ],
+              "properties": {
+                "Check_All_Ready": {
+                  "type": "boolean"
+                },
+                "onConnected": {
+                  "type": "boolean"
+                },
+                "onDisconnect": {
+                  "type": "boolean"
+                },
+                "onJoinedTeam": {
+                  "type": "boolean"
+                },
+                "onSpawned": {
+                  "type": "boolean"
+                },
+                "playerNames": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d2-event-listener-hotspot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caller_count",
+            "is_top_inbound_call_hotspot"
+          ],
+          "properties": {
+            "caller_count": {
+              "type": "integer"
+            },
+            "is_top_inbound_call_hotspot": {
+              "type": "boolean"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d3-event-listener-location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_line",
+            "end_line"
+          ],
+          "properties": {
+            "start_line": {
+              "type": "integer"
+            },
+            "end_line": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d3-match-description-location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_line",
+            "end_line"
+          ],
+          "properties": {
+            "start_line": {
+              "type": "integer"
+            },
+            "end_line": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d3-string-starts-with-location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_line",
+            "end_line"
+          ],
+          "properties": {
+            "start_line": {
+              "type": "integer"
+            },
+            "end_line": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d3-record-secure-string-location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_line",
+            "end_line"
+          ],
+          "properties": {
+            "start_line": {
+              "type": "integer"
+            },
+            "end_line": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d4-global-include-resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "raw_include",
+            "resolved_file",
+            "InitSystems_file",
+            "addEventListener_file"
+          ],
+          "properties": {
+            "raw_include": {
+              "type": "string"
+            },
+            "resolved_file": {
+              "type": "string"
+            },
+            "InitSystems_file": {
+              "type": "string"
+            },
+            "addEventListener_file": {
+              "type": "string"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d4-toujane-startup-resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bug_fix_file",
+            "bug_fix_function",
+            "fx_file",
+            "fx_function",
+            "load_file",
+            "load_function"
+          ],
+          "properties": {
+            "bug_fix_file": {
+              "type": "string"
+            },
+            "bug_fix_function": {
+              "type": "string"
+            },
+            "fx_file": {
+              "type": "string"
+            },
+            "fx_function": {
+              "type": "string"
+            },
+            "load_file": {
+              "type": "string"
+            },
+            "load_function": {
+              "type": "string"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d4-load-threaded-resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minefields_file",
+            "minefields_function",
+            "shutter_file",
+            "shutter_function",
+            "calls_are_threaded"
+          ],
+          "properties": {
+            "minefields_file": {
+              "type": "string"
+            },
+            "minefields_function": {
+              "type": "string"
+            },
+            "shutter_file": {
+              "type": "string"
+            },
+            "shutter_function": {
+              "type": "string"
+            },
+            "calls_are_threaded": {
+              "type": "boolean"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d4-rhine-startup-resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "fx_file",
+            "fx_function",
+            "load_file",
+            "load_function"
+          ],
+          "properties": {
+            "fx_file": {
+              "type": "string"
+            },
+            "fx_function": {
+              "type": "string"
+            },
+            "load_file": {
+              "type": "string"
+            },
+            "load_function": {
+              "type": "string"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d5-starts-with-ambiguity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "should_resolve",
+            "candidate_count"
+          ],
+          "properties": {
+            "should_resolve": {
+              "type": "boolean"
+            },
+            "candidate_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d5-secure-string-ambiguity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "should_resolve",
+            "candidate_count"
+          ],
+          "properties": {
+            "should_resolve": {
+              "type": "boolean"
+            },
+            "candidate_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d5-play-sound-ambiguity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "should_resolve",
+            "candidate_count"
+          ],
+          "properties": {
+            "should_resolve": {
+              "type": "boolean"
+            },
+            "candidate_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "answer-d5-missing-function": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "answer",
+        "files",
+        "observations",
+        "tool_calls"
+      ],
+      "properties": {
+        "answer": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "definition_count",
+            "should_resolve"
+          ],
+          "properties": {
+            "definition_count": {
+              "type": "integer"
+            },
+            "should_resolve": {
+              "type": "boolean"
+            }
+          }
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "suite_id": "gsc-codebase-memory-smoke-v1",
+  "run_id": "scorer-pass-fixture",
+  "condition": "graph",
+  "model": "not-a-real-agent-run",
+  "repository_revision": "fixture",
+  "metrics": {
+    "wall_ms": 1000,
+    "input_tokens": 100,
+    "output_tokens": 100
+  },
+  "answers": [
+    {
+      "task_id": "d1-duplicate-definitions",
+      "answer": "There are two definitions in the two duplicate fixture files.",
+      "files": [
+        "shared/duplicates/first.gsc",
+        "shared/duplicates/second.gsc"
+      ],
+      "observations": {
+        "definition_count": 2,
+        "is_name_ambiguous": true
+      },
+      "tool_calls": [
+        "search_graph"
+      ]
+    },
+    {
+      "task_id": "d2-call-resolution",
+      "answer": "The local call stays in main.gsc and the qualified call reaches helper.gsc.",
+      "files": [
+        "cod2/main.gsc",
+        "shared/lib/helper.gsc"
+      ],
+      "observations": {
+        "local_target_file": "cod2/main.gsc",
+        "qualified_target_file": "shared/lib/helper.gsc",
+        "qualified_module_path": "FixtureAlias\\helper"
+      },
+      "tool_calls": [
+        "trace_path",
+        "query_graph"
+      ]
+    },
+    {
+      "task_id": "d3-targeted-retrieval",
+      "answer": "The exact function occupies lines 10 through 13.",
+      "files": [
+        "cod2/main.gsc"
+      ],
+      "observations": {
+        "start_line": 10,
+        "end_line": 13,
+        "source": "local_target()\n{\n    return \"local\";\n}\n"
+      },
+      "tool_calls": [
+        "get_code_snippet"
+      ]
+    },
+    {
+      "task_id": "d4-include-overlay",
+      "answer": "The alias and source roots map the include to shared/lib/helper.gsc.",
+      "files": [
+        "cod2/main.gsc",
+        "shared/lib/helper.gsc"
+      ],
+      "observations": {
+        "raw_include": "FixtureAlias\\helper",
+        "resolved_file": "shared/lib/helper.gsc",
+        "alias_target": "lib",
+        "extension": ".gsc",
+        "case_insensitive": true
+      },
+      "tool_calls": [
+        "query_graph"
+      ]
+    },
+    {
+      "task_id": "d5-unresolved-ambiguity",
+      "answer": "The call must stay unresolved because two candidates remain.",
+      "files": [
+        "shared/duplicates/first.gsc",
+        "shared/duplicates/second.gsc"
+      ],
+      "observations": {
+        "should_resolve": false,
+        "candidate_count": 2
+      },
+      "tool_calls": [
+        "search_graph",
+        "query_graph"
+      ]
+    }
+  ]
+}

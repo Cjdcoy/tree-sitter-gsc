@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"fixture-thread"}
+{"type":"item.started","item":{"id":"graph-1","type":"mcp_tool_call","server":"codebase_memory","tool":"search_graph","arguments":{"project":"fixture","query":"target"},"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"graph-1","type":"mcp_tool_call","server":"codebase_memory","tool":"search_graph","arguments":{"project":"fixture","query":"target"},"status":"completed"}}
+{"type":"item.completed","item":{"id":"shell-1","type":"command_execution","command":"rg target source","exit_code":0,"status":"completed"}}
+{"type":"item.completed","item":{"id":"oracle-1","type":"command_execution","command":"sed -n 1,80p evaluation/zpam3-v1.json","exit_code":0,"status":"completed"}}
+{"type":"turn.completed","usage":{"input_tokens":24763,"cached_input_tokens":24448,"output_tokens":122,"reasoning_output_tokens":9}}

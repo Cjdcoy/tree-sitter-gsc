@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install toolchain
+        uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4
+
+      - name: Test grammar
+        run: mise run check
+
+      - name: Check generated parser sources
+        run: git diff --exit-code -- src/parser.c src/grammar.json src/node-types.json
+
+      - name: Compile C parser
+        run: cc -std=c11 -Wall -Wextra -Werror -Isrc -c src/parser.c -o /tmp/tree-sitter-gsc-parser.o
+
+      - name: Test agent-evaluation scorer
+        run: mise run eval:check
