@@ -94,6 +94,16 @@ function validateSuite(suite) {
   }
 }
 
+function normalizedAnswers(run) {
+  if (Array.isArray(run.answers)) {
+    return run.answers;
+  }
+  if (run.answers && typeof run.answers === "object") {
+    return Object.entries(run.answers).map(([task_id, answer]) => ({ task_id, ...answer }));
+  }
+  return [];
+}
+
 function validateRun(run, suite) {
   expect(run?.schema_version === 1, "run schema_version must be 1");
   expect(run.suite_id === suite.suite_id, `run suite_id must be ${suite.suite_id}`);
@@ -110,14 +120,17 @@ function validateRun(run, suite) {
       `run repository_revision must be ${suite.target.revision}`,
     );
   }
-  expect(Array.isArray(run.answers), "answers must be an array");
-
   const expectedIds = suite.tasks.map((task) => task.id);
-  const actualIds = run.answers.map((answer) => answer.task_id);
+  const answers = normalizedAnswers(run);
+  expect(
+    answers.length > 0 && (Array.isArray(run.answers) || typeof run.answers === "object"),
+    "answers must be an object keyed by task ID",
+  );
+  const actualIds = answers.map((answer) => answer.task_id);
   expect(sameValues(actualIds, expectedIds), "answers must contain every suite task exactly once");
   expect(new Set(actualIds).size === actualIds.length, "answers contain duplicate task ids");
 
-  for (const answer of run.answers) {
+  for (const answer of answers) {
     expect(typeof answer.answer === "string", `${answer.task_id}: answer must be a string`);
     expect(Array.isArray(answer.files), `${answer.task_id}: files must be an array`);
     expect(
@@ -164,7 +177,9 @@ function auditTools(run, suite) {
   const forbidden = new Set(
     suite.conditions[run.condition].forbidden_tools.map((name) => canonicalToolName(name)),
   );
-  const calls = run.answers.flatMap((answer) => answer.tool_calls.map(canonicalToolName));
+  const calls = normalizedAnswers(run).flatMap((answer) =>
+    answer.tool_calls.map(canonicalToolName)
+  );
   const violations = calls.filter((name) => forbidden.has(name));
   return {
     condition_valid: violations.length === 0,
@@ -175,7 +190,7 @@ function auditTools(run, suite) {
 
 function scoreRun(run, suite) {
   validateRun(run, suite);
-  const byId = new Map(run.answers.map((answer) => [answer.task_id, answer]));
+  const byId = new Map(normalizedAnswers(run).map((answer) => [answer.task_id, answer]));
   const tasks = suite.tasks.map((task) => scoreTask(task, byId.get(task.id)));
   const toolAudit = auditTools(run, suite);
   const quality = tasks.reduce((sum, task) => sum + task.score, 0) / tasks.length;
@@ -245,7 +260,6 @@ function promptFor(conditionName, suite) {
   const condition = suite.conditions[conditionName];
   expect(condition, `unknown condition: ${conditionName}`);
   const taskTemplate = {
-    task_id: "<task id>",
     answer: "<concise prose with evidence>",
     files: ["<repository-relative evidence path>"],
     observations: {
@@ -265,7 +279,7 @@ function promptFor(conditionName, suite) {
       input_tokens: 0,
       output_tokens: 0
     },
-    answers: [taskTemplate]
+    answers: Object.fromEntries(suite.tasks.map((task) => [task.id, taskTemplate]))
   };
 
   return [
@@ -278,6 +292,8 @@ function promptFor(conditionName, suite) {
     "Rules:",
     ...condition.instructions.map((instruction) => `- ${instruction}`),
     "- Do not inspect evaluation suite JSON files; they contain hidden scoring oracles.",
+    "- Put the same run-level tool set in every answer's tool_calls array.",
+    "- That set must exactly match tools that produced invocation events during this run, including status, schema, and MCP-resource inspection tools; do not include merely available, mentioned, hypothetical, unavailable, or rejected tools.",
     "- Complete every task and return exactly one JSON object with no Markdown fence.",
     "",
     "Tasks:",
@@ -310,7 +326,7 @@ function usage() {
     "Usage:",
     "  node scripts/gsc-agent-eval.mjs validate [run.json] [--suite suite.json]",
     "  node scripts/gsc-agent-eval.mjs self-test [--suite suite.json]",
-    "  node scripts/gsc-agent-eval.mjs prompt <graph|explorer> [--suite suite.json]",
+    "  node scripts/gsc-agent-eval.mjs prompt <graph|explorer|hybrid> [--suite suite.json]",
     "  node scripts/gsc-agent-eval.mjs score <run.json> [--suite suite.json]",
     "  node scripts/gsc-agent-eval.mjs compare <run.json>... [--suite suite.json]",
   ].join("\n");

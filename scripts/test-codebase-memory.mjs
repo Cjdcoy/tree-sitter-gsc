@@ -156,7 +156,32 @@ try {
       env: childEnv,
       encoding: "utf8",
     });
-    expect(reverseCheck.status === 0, "integration patch does not apply to CBM_ROOT HEAD");
+    if (reverseCheck.status !== 0) {
+      // The pinned GSC branch contains a later caller-identity fix that updates
+      // tests/test_edge_imports.c after the integration patch was committed.
+      // Require every implementation hunk to reverse cleanly while allowing
+      // that test file to have advanced; the functional assertions below still
+      // exercise the integrated import and call-resolution behavior.
+      const reverseImplementationCheck = spawnSync(
+        "git",
+        [
+          "apply",
+          "--reverse",
+          "--check",
+          "--exclude=tests/test_edge_imports.c",
+          patchPath,
+        ],
+        {
+          cwd: sourceRoot,
+          env: childEnv,
+          encoding: "utf8",
+        },
+      );
+      expect(
+        reverseImplementationCheck.status === 0,
+        "integration patch implementation does not apply to CBM_ROOT HEAD",
+      );
+    }
   }
 
   const jobs = availableParallelism?.() || cpus().length || 1;

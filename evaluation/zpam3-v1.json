@@ -10,9 +10,10 @@
     "graph": {
       "description": "Use codebase-memory-mcp graph tools for code discovery.",
       "instructions": [
-        "Use codebase-memory-mcp graph tools for code discovery and evidence.",
-        "Do not inspect repository files with shell search or direct file-reading tools.",
-        "Record every code-discovery tool name in each answer's tool_calls array."
+      "Use codebase-memory-mcp graph tools for code discovery and evidence.",
+      "Do not inspect repository files with shell search or direct file-reading tools.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, tool_calls may name only get_architecture, get_code_snippet, get_graph_schema, index_status, list_projects, query_graph, search_graph, trace_path, list_mcp_resources, and list_mcp_resource_templates; never report exec, exec_command, tool_search_tool, or an uninvoked tool."
       ],
       "forbidden_tools": [
         "exec",
@@ -26,9 +27,10 @@
     "explorer": {
       "description": "Use ordinary text search and file reading without the graph.",
       "instructions": [
-        "Use ordinary text search and file-reading tools for code discovery.",
-        "Do not call any codebase-memory-mcp graph tool.",
-        "Record every code-discovery tool name in each answer's tool_calls array."
+      "Use ordinary text search and file-reading tools for code discovery.",
+      "Do not call any codebase-memory-mcp graph tool.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, report only ordinary exploration tools that actually produced invocation events; never report graph tools, tool_search_tool, or an uninvoked tool."
       ],
       "forbidden_tools": [
         "get_architecture",
@@ -40,6 +42,17 @@
         "trace_call_path",
         "trace_path"
       ]
+    },
+    "hybrid": {
+      "description": "Use codebase-memory-mcp graph tools together with ordinary text search and file reading.",
+      "instructions": [
+      "Use both codebase-memory-mcp graph tools and ordinary shell-based repository exploration for discovery and evidence.",
+      "Use graph tools for structural definition, caller, and dependency questions; use targeted shell search or file reads to verify or fill gaps.",
+      "Batch independent work within each tool family where possible, and avoid repeating status or schema queries after they are known.",
+      "Record the same run-level set of actually invoked tool names in every answer's tool_calls array.",
+      "For this condition, report only graph or ordinary exploration tools that actually produced invocation events; never report tool_search_tool or an uninvoked tool."
+      ],
+      "forbidden_tools": []
     }
   },
   "tasks": [

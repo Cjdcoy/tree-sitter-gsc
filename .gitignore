@@ -1,5 +1,7 @@
 .cache/
 build/
+evaluation/results/
+# Reports derived from private integration corpora stay local.
+evaluation/private/
 node_modules/
 target/
-

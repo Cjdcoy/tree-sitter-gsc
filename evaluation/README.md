@@ -92,3 +92,114 @@ structural relationships.
 
 Run each condition at least five times with the same model, prompt, context
 limit, and time limit before drawing performance conclusions.
+
+## Controlled zPAM3 benchmark
+
+The benchmark runner isolates Codex configuration and authentication, builds
+and indexes the pinned local `codebase-memory-mcp` fork, audits the
+model-visible prompt and MCP inventory, captures raw JSONL events, enforces the
+strict 20-task response schema, and compares actual tool events with the
+response's self-reported tool names. It never invokes a model during
+`preflight` or `--dry-run`.
+
+The graph condition enables only the committed graph-tool allowlist and sets
+that server's `default_tools_approval_mode` to `approve`. This is intentional:
+`codebase-memory-mcp` conservatively marks graph reads as potentially
+destructive because corrupt-cache recovery can quarantine files, while the
+benchmark uses `approval_policy = "never"` and an isolated disposable cache.
+The controller invalidates a graph run that has no successful evidence-bearing
+graph call and classifies approval/transport cancellation as infrastructure
+failure.
+
+Run the no-spend checks:
+
+```sh
+node scripts/run-gsc-agent-benchmark.mjs preflight \
+  --suite evaluation/zpam3-v1.json \
+  --corpus /path/to/zpam3 \
+  --cbm-root /path/to/codebase-memory-mcp
+
+node scripts/run-gsc-agent-benchmark.mjs run \
+  --suite evaluation/zpam3-v1.json \
+  --corpus /path/to/zpam3 \
+  --cbm-root /path/to/codebase-memory-mcp \
+  --model gpt-5.6-sol \
+  --reasoning-effort xhigh \
+  --repetitions 5 \
+  --seed zpam3-v1-sol56-xhigh \
+  --dry-run
+```
+
+Create and inspect the paid smoke pair:
+
+```sh
+node scripts/run-gsc-agent-benchmark.mjs run \
+  --suite evaluation/zpam3-v1.json \
+  --corpus /path/to/zpam3 \
+  --cbm-root /path/to/codebase-memory-mcp \
+  --model gpt-5.6-sol \
+  --reasoning-effort xhigh \
+  --repetitions 5 \
+  --seed zpam3-v1-sol56-xhigh \
+  --smoke-only
+```
+
+If the smoke artifacts are valid and no runner, suite, schema, prompt, binary,
+or source input changed, continue the same cohort:
+
+```sh
+node scripts/run-gsc-agent-benchmark.mjs run \
+  --resume \
+  --cohort-dir evaluation/results/zpam3/<cohort-id> \
+  --suite evaluation/zpam3-v1.json \
+  --corpus /path/to/zpam3 \
+  --cbm-root /path/to/codebase-memory-mcp \
+  --model gpt-5.6-sol \
+  --reasoning-effort xhigh \
+  --repetitions 5 \
+  --seed zpam3-v1-sol56-xhigh
+```
+
+Run only the hybrid condition, with both graph and ordinary explorer tools
+enabled, without launching new graph-only or explorer baselines:
+
+```sh
+node scripts/run-gsc-agent-benchmark.mjs run \
+  --suite evaluation/zpam3-v1.json \
+  --corpus /path/to/zpam3 \
+  --cbm-root /path/to/codebase-memory-mcp \
+  --model gpt-5.6-sol \
+  --reasoning-effort xhigh \
+  --repetitions 5 \
+  --seed zpam3-v1-sol56-xhigh-hybrid \
+  --hybrid-only \
+  --smoke-only
+```
+
+Resume that hybrid-only cohort with the same arguments plus `--resume` and
+`--cohort-dir`. The controller rejects a hybrid run unless at least one
+evidence-bearing graph call and one ordinary explorer call both succeed. Any
+comparison with an earlier explorer cohort is descriptive and unpaired because
+the explorer baseline is not rerun.
+
+Rebuild the aggregate report at any time:
+
+```sh
+node scripts/run-gsc-agent-benchmark.mjs summarize \
+  evaluation/results/zpam3/<cohort-id> \
+  --suite evaluation/zpam3-v1.json
+```
+
+Each attempt is finalized by an atomic directory rename and retains its prompt,
+events, stderr, final response, controller-owned run record, tool audit, score,
+and invalidation reasons. `evaluation/results/` is intentionally ignored.
+
+### Latest validated public cohorts
+
+The corrected five-pair zPAM3 cohort produced 0.997 mean weighted score and 98%
+exact task accuracy for graph-only, versus 0.996 and 99% for explorer-only.
+The five-run hybrid cohort also scored 0.997 with 98% exact accuracy, while
+using materially more total tokens than explorer-only. These results measure
+the pinned public corpus and runner configuration; they are not general model
+benchmarks. Raw cohorts remain local and ignored, while manifests and reports
+can be regenerated with the commands above.

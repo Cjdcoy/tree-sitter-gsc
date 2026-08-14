@@ -14,9 +14,10 @@ Keep responsibilities separate:
 - `vscode-cod-gsc` remains the semantic/dialect reference for diagnostics,
   built-in functions, completion, rename, and other editor behavior.
 
-Tree-sitter should not silently become a second linter. Decide whether syntax
-is CoD2-only or a permissive cross-game superset before adding newer-dialect
-constructs.
+Tree-sitter should not silently become a second linter. The current policy is
+CoD2-first with explicitly documented permissive compatibility: corpus and
+semantic gates define CoD2 support, while parse success alone does not claim a
+construct is valid for CoD2. Task 5 tracks the remaining policy detail.
 
 ## Reference baseline
 
@@ -39,7 +40,7 @@ Current grammar results:
   intentionally malformed or invalid for CoD2. Remaining false negative is
   universal/CoD1-style casting such as `(int)1`.
 
-Current production MCP result on an external GSC-only CoD2 corpus:
+Pre-fix production MCP baseline on an external GSC-only CoD2 corpus:
 
 - 7,104 function nodes.
 - 63,434 syntactic call occurrences captured by Tree-sitter tags.
@@ -49,6 +50,19 @@ Current production MCP result on an external GSC-only CoD2 corpus:
 - Seven partial files, all `.cfg`; no partial `.gsc` files.
 - 336 `#include` directives extracted, but only two resolved `IMPORTS`
   edges in the source-tree layout.
+
+The repeatable integration fixture now passes with four discovered GSC files,
+six function definitions, two resolved calls, one resolved include, exact
+snippet ranges, ambiguity checks, and an isolated cache. The integration patch
+applies cleanly to the documented `7d6cdb2` baseline and its three vendored
+grammar files pass `vendor:check`.
+
+Current public evaluation baseline:
+
+- zPAM3 revision `83285ae`: 180 GSC files and 1,580 function definitions.
+- Agent-evaluation validation: 21/21 controller and runner tests pass.
+- Controlled graph, explorer, and hybrid cohorts are supported; raw results
+  remain under ignored `evaluation/results/`.
 
 Focused codebase-memory tests pass: 476/476.
 
@@ -61,12 +75,12 @@ Existing integration artifact:
 
 Work tasks in this order unless user requests a narrower task:
 
-1. Import/path resolution.
-2. Qualified call resolution.
-3. End-to-end MCP regression test.
-4. Differential fixture harness.
-5. Grammar/dialect expansion.
-6. CI, packaging, and release automation.
+1. Finish the grammar dialect policy and label compatibility fixtures.
+2. Cover universal syntax gaps only where that policy allows.
+3. Improve error recovery and Tree-sitter query coverage.
+4. Finish full integration-patch regeneration automation.
+5. Package and publish the first release.
+6. Add parser performance, stress, and fuzzing gates.
 
 ---
 
@@ -189,6 +203,10 @@ Leaf-only matching can become ambiguous or wrong.
 
 ## Task 3: Add end-to-end MCP corpus gate
 
+Status: implemented and verified by `mise run test:codebase-memory`. The task
+uses an isolated temporary source snapshot, cache, database, and logs without
+modifying `CBM_ROOT` or user cache.
+
 ### Problem
 
 Unit extraction passes, but graph behavior needs a repeatable real-corpus gate.
@@ -226,6 +244,10 @@ checks without touching user cache.
 ---
 
 ## Task 4: Add differential vscode-cod-gsc fixture harness
+
+Status: implemented in `scripts/test-vscode-cod-gsc.mjs` and exposed as
+`mise run test:vscode-cod-gsc`. The pinned baseline records 20/20 valid CoD2
+fixtures and keeps universal-only gaps separate.
 
 ### Problem
 
@@ -267,6 +289,9 @@ repository without explicit license review. Prefer:
 
 ## Task 5: Decide grammar dialect policy
 
+Status: partially decided. README now states the CoD2-first permissive policy;
+fixture-level CoD2, universal, and recovery labels remain to be added.
+
 ### Decision needed
 
 Choose and document one:
@@ -304,6 +329,9 @@ Document that parse success does not mean valid CoD2.
 
 ## Task 6: Cover universal syntax gaps
 
+Status: open and subordinate to Task 5. Cast expressions and `foreach` remain
+the clearest known gaps; they must not weaken the CoD2 baseline.
+
 Do only after Task 5 decision.
 
 Candidate features from `vscode-cod-gsc`:
@@ -334,6 +362,9 @@ Candidate features from `vscode-cod-gsc`:
 
 ## Task 7: Improve error recovery
 
+Status: open. The existing corpus covers valid syntax but does not yet provide
+the focused malformed-input and post-error discovery guarantees below.
+
 ### Work
 
 - Test missing semicolons without swallowing following function.
@@ -353,6 +384,10 @@ Candidate features from `vscode-cod-gsc`:
 
 ## Task 8: Expand Tree-sitter queries
 
+Status: partially implemented. Function definitions and direct/qualified calls
+are tagged; import tags, useful indirect-call captures, and query-count tests
+remain.
+
 ### Work
 
 - Add import tag capture for `preproc_include`.
@@ -371,6 +406,11 @@ Candidate features from `vscode-cod-gsc`:
 ---
 
 ## Task 9: Make integration patch reproducible
+
+Status: partially implemented. The patch applies cleanly to `7d6cdb2`, the
+end-to-end gate is repeatable, and `vendor:check`/`vendor:sync` cover the three
+vendored grammar files. Regenerating the complete integration patch is still a
+reviewed manual step.
 
 ### Work
 
@@ -397,6 +437,11 @@ Candidate features from `vscode-cod-gsc`:
 
 ## Task 10: Add CI around mise.toml
 
+Status: implemented for public offline checks. CI installs the locked mise
+toolchain, runs grammar and evaluation tests, rejects generated parser drift,
+and compiles the C parser with warnings as errors. External licensed/private
+corpus gates remain opt-in by design; dedicated query-count tests remain Task 8.
+
 ### Work
 
 - Install tools from `mise.lock`.
@@ -417,6 +462,10 @@ Candidate features from `vscode-cod-gsc`:
 
 ## Task 11: Package and release
 
+Status: partially prepared. C binding metadata is present and the changelog now
+defines semantic-versioning policy. The first tag and release artifact remain
+open.
+
 ### Work
 
 - Keep C binding mandatory for codebase-memory.
@@ -435,6 +484,9 @@ Candidate features from `vscode-cod-gsc`:
 ---
 
 ## Task 12: Performance and robustness
+
+Status: open. Agent lookup benchmarks do not replace parser throughput,
+stress, or fuzz testing.
 
 ### Work
 
@@ -458,12 +510,14 @@ mise install
 mise run generate
 mise run test
 mise run check
+mise run eval:check
 ```
 
 Optional external corpus:
 
 ```sh
 GSC_ROOT=/path/to/gsc mise run test:external
+ZPAM3_ROOT=/path/to/zpam3 mise run test:zpam3
 ```
 
 Upstream integration:
@@ -481,8 +535,9 @@ make -f Makefile.cbm -j"$(nproc)" test-par
 - Never edit generated external runtime trees as source.
 - Preserve unrelated untracked work, including `tools/`.
 - Do not commit unless user requests it.
-- If committing, user requires anonymous/no-reply email. Verify local Git
-  identity first; do not use corporate email.
+- Every commit must use `22911399+Cjdcoy@users.noreply.github.com`. Verify the
+  effective Git identity before committing; never use personal or corporate
+  mailbox addresses.
 - Report syntax coverage, structural extraction, and graph resolution as
   separate metrics.
 - Never describe parser as linter replacement.

@@ -65,10 +65,11 @@ description = "Run public grammar checks"
 depends = ["test"]
 
 [tasks."eval:check"]
-description = "Validate the GSC agent-evaluation suite and scorer"
+description = "Validate the GSC agent-evaluation suite, scorer, and benchmark runner"
 run = """
 node scripts/gsc-agent-eval.mjs validate
 node scripts/gsc-agent-eval.mjs validate --suite evaluation/zpam3-v1.json
 node scripts/gsc-agent-eval.mjs validate test/fixtures/agent-eval/scorer-pass.json
 node scripts/gsc-agent-eval.mjs self-test
+node --test test/run-gsc-agent-benchmark.test.mjs
 """
